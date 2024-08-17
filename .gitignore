@@ -1,0 +1,11 @@
+.vscode/
+build/
+Debug/
+Release/
+.mxproject
+CMakePresets.json
+JLinkLog.txt
+Flash.bat
+Flash.jlink
+Debug.jdebug
+Debug.jdebug.user
