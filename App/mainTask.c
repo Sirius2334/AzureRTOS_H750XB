@@ -4,6 +4,7 @@
 VOID mainTask(ULONG id)
 {
     (void)id;
+    rtt_init();
 
     RTT_LOG_INFO("hello world, pi = %f", 3.1415926);
 
