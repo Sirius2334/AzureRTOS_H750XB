@@ -64,7 +64,8 @@ UINT App_ThreadX_Init(VOID *memory_ptr)
   /* USER CODE END App_ThreadX_MEM_POOL */
 
   /* USER CODE BEGIN App_ThreadX_Init */
-
+  UINT thread_init(VOID *memory_ptr);
+  thread_init(memory_ptr);
   /* USER CODE END App_ThreadX_Init */
 
   return ret;
