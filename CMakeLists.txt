@@ -73,3 +73,9 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     # Add user defined libraries
     segger
 )
+
+# Linker options
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
+    -T "${CMAKE_SOURCE_DIR}/STM32H750XBHx_COSTUME.ld"
+    # -u _printf_float # STDIO float formatting support (remove if not used)
+)
