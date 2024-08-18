@@ -48,7 +48,9 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
+    "App/initTask.c"
     "App/mainTask.c"
+    "App/shellTask.c"
     "App/threadEntry.c"
     "Drv/driver/drv_uart.c"
 )
@@ -68,19 +70,21 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 # Add subdirectory code
 add_subdirectory(Drv/segger)
 add_subdirectory(Drv/lwrb)
+add_subdirectory(Drv/letterShell)
 
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
 
     # Add user defined libraries
-    segger
+    letterShell
     lwrb
+    segger
 )
 
 
 # Linker options
 target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
     -T "${CMAKE_SOURCE_DIR}/STM32H750XBHx_COSTUME.ld"
-    # -u _printf_float # STDIO float formatting support (remove if not used)
+    -u _printf_float # STDIO float formatting support (remove if not used)
 )

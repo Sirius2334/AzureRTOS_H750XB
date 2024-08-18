@@ -5,13 +5,10 @@
 VOID mainTask(ULONG id)
 {
     (void)id;
-    rtt_init();
 
     RTT_LOG_INFO("hello world, pi = %f", 3.1415926);
 
-    uart_init(&huart1);
-
-    uart_printf(&huart1, "hello world, pi = %f", 3.1415926);
+    // uart_printf(&huart1, "hello world, pi = %f", 3.1415926);
 
     while (1)
     {

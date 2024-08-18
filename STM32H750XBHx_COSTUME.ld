@@ -184,6 +184,18 @@ SECTIONS
     . = ALIGN(4);
   } >RAM_D3
 
+  /* The shell command function code goes into FLASH */
+  .shellFunc :
+  {
+    . = ALIGN(4);
+
+    _shell_command_start = .;
+    KEEP (*(shellCommand))
+    _shell_command_end = .;
+
+    . = ALIGN(4);
+  } >FLASH
+
   /* Remove information from the standard libraries */
   /DISCARD/ :
   {
