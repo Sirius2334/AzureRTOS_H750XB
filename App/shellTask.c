@@ -69,3 +69,16 @@ SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN),
                  func,
                  shellFunc,
                  test);
+
+int sdramTest(int argc, char *argv[])
+{
+    (void)argc;
+    (void)argv;
+    extern uint8_t SDRAM_Test(void);
+
+    return SDRAM_Test();
+}
+SHELL_EXPORT_CMD(SHELL_CMD_PERMISSION(0) | SHELL_CMD_TYPE(SHELL_TYPE_CMD_MAIN),
+                 sdramTest,
+                 sdramTest,
+                 Test sdram funcion);
