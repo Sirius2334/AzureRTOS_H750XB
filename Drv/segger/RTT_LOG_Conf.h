@@ -4,12 +4,24 @@
 /**
  * @brief segger rtt buffer size
  * @note UP是上行, 即输出; DOWN是下行, 即输入
- * 
+ *
  * @note SEGGER_RTT_Printf的缓存大小
+ *
+ * @note 上行通道数量, 下行通道数量
  */
 #define BUFFER_SIZE_UP (1024)
 #define BUFFER_SIZE_DOWN (16)
 #define SEGGER_RTT_PRINTF_BUFFER_SIZE (64)
+#define SEGGER_RTT_MAX_NUM_UP_BUFFERS (3)
+#define SEGGER_RTT_MAX_NUM_DOWN_BUFFERS (3)
+
+/**
+ * @brief Use micro printf lib
+ *
+ * @note 如果其余打印使用了这个打印库, 使能该选项会减少约2KB Flash,
+ *       如果仅使用RTT打印浮点数, 关掉此选项可以减少约10KB Flash
+ */
+#define LIBC_PRINTF 1
 
 /**
  * @brief Enable segger rtt log

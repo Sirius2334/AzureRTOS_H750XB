@@ -53,6 +53,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     "App/shellTask.c"
     "App/threadEntry.c"
     "Drv/driver/drv_uart.c"
+    "Drv/lib/printf.c"
 )
 
 # Add include paths
@@ -60,6 +61,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     "App"
     "Drv/driver"
+    "Drv/lib"
 )
 
 # Add project symbols (macros)
@@ -86,5 +88,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 # Linker options
 target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
     -T "${CMAKE_SOURCE_DIR}/STM32H750XBHx_COSTUME.ld"
-    -u _printf_float # STDIO float formatting support (remove if not used)
+    # -u _printf_float # STDIO float formatting support (remove if not used)
 )

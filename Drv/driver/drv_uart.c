@@ -1,5 +1,7 @@
 #include "drv_uart.h"
 
+#include "printf.h"
+
 #define ARRAY_LEN(x) (sizeof(x) / sizeof((x)[0]))
 #define RECV_SIZE 64
 

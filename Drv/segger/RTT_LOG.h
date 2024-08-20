@@ -9,8 +9,12 @@
 #include "RTT_LOG_Conf.h"
 
 #if RTT_LOG_ENABLE
+#if LIBC_PRINTF
+#define RTT_LOG_PRINT(format, ...) rtt_printf(RTT_LOG_TERMINAL, format, ##__VA_ARGS__)
+#else
 #define RTT_LOG_PRINT(format, ...) SEGGER_RTT_printf(RTT_LOG_TERMINAL, format, ##__VA_ARGS__)
-#elif
+#endif
+#else
 #define RTT_LOG_PRINT(format, ...)
 #endif
 
