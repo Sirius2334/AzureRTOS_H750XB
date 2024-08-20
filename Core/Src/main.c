@@ -22,6 +22,7 @@
 #include "dma.h"
 #include "ltdc.h"
 #include "memorymap.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 #include "fmc.h"
@@ -108,6 +109,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_FMC_Init();
   MX_LTDC_Init();
+  MX_TIM12_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */

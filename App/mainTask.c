@@ -2,6 +2,8 @@
 #include "RTT_LOG.h"
 #include "drv_uart.h"
 
+#include "tim.h"
+
 VOID mainTask(ULONG id)
 {
     (void)id;
@@ -9,7 +11,9 @@ VOID mainTask(ULONG id)
     RTT_LOG_INFO("hello world, pi = %f", 3.1415926);
 
     uart_printf(&huart1, "hello world, pi = %f", 3.1415926);
-    HAL_GPIO_WritePin(GPIOH, GPIO_PIN_6, GPIO_PIN_SET);
+
+    HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_1);
+    TIM12->CCR1 = 100;
 
     while (1)
     {
