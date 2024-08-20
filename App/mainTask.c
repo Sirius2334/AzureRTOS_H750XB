@@ -9,6 +9,7 @@ VOID mainTask(ULONG id)
     RTT_LOG_INFO("hello world, pi = %f", 3.1415926);
 
     uart_printf(&huart1, "hello world, pi = %f", 3.1415926);
+    HAL_GPIO_WritePin(GPIOH, GPIO_PIN_6, GPIO_PIN_SET);
 
     while (1)
     {
