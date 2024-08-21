@@ -18,9 +18,12 @@ extern TX_MUTEX shellMutex;
  */
 short userShellWrite(char *data, unsigned short len)
 {
-    uint32_t sendLen;
-    sendLen = uart_send_dma(&huart1, (uint8_t *)data, len);
-    sendLen = SEGGER_RTT_Write(0, data, len);
+    uint32_t sendLen = 0;
+    do
+    {
+        sendLen += uart_send_dma(&huart1, (uint8_t *)(data + sendLen), len - sendLen);
+    } while (sendLen < len);
+    // sendLen = SEGGER_RTT_Write(0, data, len);
     return sendLen;
 }
 
