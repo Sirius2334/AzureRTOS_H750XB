@@ -20,6 +20,7 @@
 #include "app_threadx.h"
 #include "main.h"
 #include "dma.h"
+#include "dma2d.h"
 #include "ltdc.h"
 #include "memorymap.h"
 #include "tim.h"
@@ -110,6 +111,7 @@ int main(void)
   MX_FMC_Init();
   MX_LTDC_Init();
   MX_TIM12_Init();
+  MX_DMA2D_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */

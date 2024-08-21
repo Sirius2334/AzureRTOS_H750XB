@@ -52,6 +52,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     "App/mainTask.c"
     "App/shellTask.c"
     "App/threadEntry.c"
+    "Drv/driver/drv_dma2d.c"
     "Drv/driver/drv_sdram.c"
     "Drv/driver/drv_uart.c"
     "Drv/lib/printf.c"
