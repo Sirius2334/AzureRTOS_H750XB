@@ -75,6 +75,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 add_subdirectory(Drv/segger)
 add_subdirectory(Drv/lwrb)
 add_subdirectory(Drv/letterShell)
+add_subdirectory(Drv/lvgl)
 
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
@@ -84,6 +85,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     letterShell
     lwrb
     segger
+    lvgl
 )
 
 

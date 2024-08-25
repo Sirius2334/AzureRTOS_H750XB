@@ -18,6 +18,25 @@ static inline void DMA2D_Fill(void *pDst, uint32_t width, uint32_t height, uint3
         ;
 }
 
+void DMA2D_MemCopy(void *pSrc, void *pDst, int width, int height, int OffLineSrc, int OffLineDst, uint32_t pixelFormat)
+{
+    /* DMA2D配置 */
+    DMA2D->CR = 0x00000000UL;
+    DMA2D->FGMAR = (uint32_t)pSrc;
+    DMA2D->OMAR = (uint32_t)pDst;
+    DMA2D->FGOR = OffLineSrc;
+    DMA2D->OOR = OffLineDst;
+    DMA2D->FGPFCCR = pixelFormat;
+    DMA2D->NLR = (uint32_t)(width << 16) | (uint16_t)height;
+
+    /* 启动传输 */
+    DMA2D->CR |= DMA2D_CR_START;
+
+    /* 等待DMA2D传输完成 */
+    while (DMA2D->CR & DMA2D_CR_START)
+        ;
+}
+
 void FillRect(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t color)
 {
     void *pDist = ((uint32_t *)0xC0000000 + y * 800 + x);

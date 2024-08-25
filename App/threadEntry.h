@@ -8,7 +8,7 @@
 #include "mainTask.h"
 #include "shellTask.h"
 
-#define mainTask_STACK_SIZE 512
-#define shellTask_STACK_SIZE 2048
+#define mainTask_STACK_SIZE 4096
+#define shellTask_STACK_SIZE 1024
 
 #endif

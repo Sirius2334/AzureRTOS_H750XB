@@ -233,6 +233,15 @@ void MPU_Config(void)
   MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER2;
+  MPU_InitStruct.BaseAddress = 0xC0000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_4MB;
+  MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
   /* Enables the MPU */
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 
