@@ -34,7 +34,7 @@ VOID shellTask(ULONG id)
     uint32_t string_len;
 
     lwrb_set_evt_fn(&rx_ringbuf, lwrb_recv_cb);
-    userShellInit(&shell);
+    // userShellInit(&shell);
 
     while (1)
     {
