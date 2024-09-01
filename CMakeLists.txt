@@ -43,6 +43,7 @@ add_subdirectory(cmake/stm32cubemx)
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
+    "Drv/dsp"
 )
 
 # Add sources to executable
@@ -64,6 +65,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     "App"
     "Drv/driver"
     "Drv/lib"
+    "Drv/dsp/inc"
 )
 
 # Add project symbols (macros)
@@ -82,6 +84,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
 
     # Add user defined libraries
+    arm_cortexM7lfdp_math
     letterShell
     lwrb
     segger
