@@ -6,6 +6,8 @@
 #include "tim.h"
 
 #include "sdmmc.h"
+#include "jpeg.h"
+#include "decode_dma.h"
 
 #include "lvgl.h"
 #include "porting/lv_port_disp.h"
@@ -15,8 +17,64 @@
 
 #include "arm_math.h"
 
+#define JPEG_OUTPUT_BUFFER_ADDR (((uint32_t *)0xC0000000) + 800 * 480 * 4)
+#define CHUNK_SIZE_IN ((uint32_t)(64 * 1024))  // 单次解码输入数据最大长度
+#define CHUNK_SIZE_OUT ((uint32_t)(64 * 1024)) // 单次解码输出数据最大长度
+
 void bsp_InitDWT(void);
 static void DSP_Sine(void);
+
+asm(".global jpeg_start, jpeg_end;"
+    // "jpeg_start: .incbin \"../ltdc.jpg\";"
+    "jpeg_start: "
+    // ".incbin \"../ltdc.bmp\";"
+    ".incbin \"../ltdc.jpg\";"
+    "jpeg_end: ");
+
+extern unsigned int jpeg_start, jpeg_end;
+extern __IO uint32_t Jpeg_HWDecodingEnd;
+
+typedef struct __attribute__((__packed__)) BITMAPFILEHEADER /* size: 40 */
+{
+    uint16_t bfType;      // 文件的类型，该值必需是0x4D42，也就是字符'BM'。
+    uint32_t bfSize;      // 位图文件的大小，用字节为单位
+    uint16_t bfReserved1; // 保留，必须设置为0
+    uint16_t bfReserved2; // 保留，必须设置为0
+    uint32_t bfOffBits;   // 位图数据距离文件开头偏移量，用字节为单位
+} BITMAP_FILE_HEADER;
+
+void jpeg_test(void)
+{
+    uint8_t *jpeg_start_addr = (uint8_t *)&jpeg_start;
+    uint8_t *jpeg_end_addr = (uint8_t *)&jpeg_end;
+    uint32_t jpeg_length = jpeg_end_addr - jpeg_start_addr;
+
+    uint32_t xPos = 0, yPos = 0;
+
+    RTT_LOG_INFO("jpeg_start_addr = 0x%08x, jpeg_end_addr = 0x%08x, length = %d", jpeg_start_addr, jpeg_end_addr, jpeg_length);
+
+    /* JPEG decoding with DMA (Not Blocking ) Method */
+    JPEG_Decode_DMA(&hjpeg, (uint32_t)jpeg_start_addr, jpeg_length, (uint32_t)0xC0200000);
+    // JPEG_Decode_DMA(&hjpeg, (uint32_t)image_320_240_jpg, IMAGE_320_240_JPG_SIZE, (uint32_t)0xC0200000);
+
+    /* Wait till end of JPEG decoding */
+    while (Jpeg_HWDecodingEnd == 0)
+        ;
+
+    /* Copy RGB decoded Data to the display FrameBuffer */
+    xPos = (800 - hjpeg.Conf.ImageWidth) / 2;
+    yPos = (480 - hjpeg.Conf.ImageHeight) / 2;
+    RTT_LOG_INFO("ColorSpace = %d, ChromaSubsampling = %d, ImageWidth = %d, ImageHeight = %d, ImageQuality = %d",
+                 hjpeg.Conf.ColorSpace,
+                 hjpeg.Conf.ChromaSubsampling,
+                 hjpeg.Conf.ImageWidth,
+                 hjpeg.Conf.ImageHeight,
+                 hjpeg.Conf.ImageQuality);
+
+    DMA2D_Copy_YCbCr_To_RGB((uint32_t *)0xC0200000, (uint32_t *)0xC0000000, xPos, yPos, hjpeg.Conf.ImageWidth, hjpeg.Conf.ImageHeight, LTDC_PIXEL_FORMAT_ARGB8888, hjpeg.Conf.ChromaSubsampling);
+}
+
+BITMAP_FILE_HEADER *pbitmap_header = (BITMAP_FILE_HEADER *)&jpeg_start;
 
 VOID mainTask(ULONG id)
 {
@@ -31,7 +89,28 @@ VOID mainTask(ULONG id)
     HAL_TIM_PWM_Start(&htim12, TIM_CHANNEL_1);
     TIM12->CCR1 = 30;
 
-    FillRect(100, 100, 600, 280, 0xFFFFFFFF);
+    FillRect(0, 0, 100, 480, 0xFFFF0000);
+    FillRect(100, 0, 100, 480, 0xFFFFFF00);
+    FillRect(200, 0, 100, 480, 0xFF00FF00);
+    FillRect(300, 0, 100, 480, 0xFF00FFFF);
+    FillRect(400, 0, 100, 480, 0xFF0000FF);
+    FillRect(500, 0, 100, 480, 0xFFFF00FF);
+    FillRect(600, 0, 100, 480, 0xFFFFFFFF);
+    FillRect(700, 0, 100, 480, 0xFF000000);
+
+    jpeg_test();
+
+    RTT_LOG_INFO("type = 0x%04X, size = %d Bytes, offset = %d.",
+                 (uint16_t)pbitmap_header->bfType,
+                 (uint32_t)pbitmap_header->bfSize,
+                 (uint32_t)pbitmap_header->bfOffBits);
+
+    uint8_t *jpeg_start_addr = (uint8_t *)&jpeg_start;
+    uint8_t *jpeg_end_addr = (uint8_t *)&jpeg_end;
+    uint32_t jpeg_length = jpeg_end_addr - jpeg_start_addr;
+    RTT_LOG_INFO("jpeg_start_addr = 0x%08x, jpeg_end_addr = 0x%08x, length = %d", jpeg_start_addr, jpeg_end_addr, jpeg_length);
+
+    // DMA2D_MemCopy((uint8_t *)&jpeg_start + 52, (uint32_t *)0xC0000000, 480, 480, 0, 800 - 480, LTDC_PIXEL_FORMAT_ARGB8888);
 
     // lv_init();
     // lv_port_disp_init();

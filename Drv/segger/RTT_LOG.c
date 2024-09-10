@@ -9,7 +9,7 @@ void rtt_init(void)
 
 void rtt_printf(uint8_t BufferIndex, const char *fmt, ...)
 {
-    char buf[128];
+    char buf[256];
     uint32_t len;
 
     va_list arg;

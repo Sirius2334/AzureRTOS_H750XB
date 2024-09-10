@@ -18,6 +18,7 @@ target_include_directories(stm32cubemx INTERFACE
     ../../AZURE_RTOS/App
     ../../Drivers/STM32H7xx_HAL_Driver/Inc
     ../../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy
+    ../../Utilities/JPEG
     ../../Drivers/CMSIS/Device/ST/STM32H7xx/Include
     ../../Drivers/CMSIS/Include
     ../../Middlewares/ST/threadx/common/inc/
@@ -31,7 +32,9 @@ target_sources(stm32cubemx INTERFACE
     ../../Core/Src/dma.c
     ../../Core/Src/dma2d.c
     ../../Core/Src/fmc.c
+    ../../Core/Src/jpeg.c
     ../../Core/Src/ltdc.c
+    ../../Core/Src/mdma.c
     ../../Core/Src/memorymap.c
     ../../Core/Src/sdmmc.c
     ../../Core/Src/tim.c
@@ -59,6 +62,7 @@ target_sources(stm32cubemx INTERFACE
     ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dma2d.c
     ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_fmc.c
     ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sdram.c
+    ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_jpeg.c
     ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_ltdc.c
     ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_ltdc_ex.c
     ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dsi.c
@@ -227,6 +231,7 @@ target_sources(stm32cubemx INTERFACE
     ../../Middlewares/ST/threadx/common/src/txe_timer_deactivate.c
     ../../Middlewares/ST/threadx/common/src/txe_timer_delete.c
     ../../Middlewares/ST/threadx/common/src/txe_timer_info_get.c
+    ../../Utilities/JPEG/jpeg_utils.c
     ../../Core/Src/sysmem.c
     ../../Core/Src/syscalls.c
     ../../startup_stm32h750xx.s

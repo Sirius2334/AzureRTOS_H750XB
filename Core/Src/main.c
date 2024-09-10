@@ -21,7 +21,9 @@
 #include "main.h"
 #include "dma.h"
 #include "dma2d.h"
+#include "jpeg.h"
 #include "ltdc.h"
+#include "mdma.h"
 #include "memorymap.h"
 #include "sdmmc.h"
 #include "tim.h"
@@ -108,11 +110,13 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
+  MX_MDMA_Init();
   MX_USART1_UART_Init();
   MX_FMC_Init();
   MX_LTDC_Init();
   MX_TIM12_Init();
   MX_DMA2D_Init();
+  MX_JPEG_Init();
   MX_SDMMC1_SD_Init();
   /* USER CODE BEGIN 2 */
 
@@ -240,7 +244,7 @@ void MPU_Config(void)
   */
   MPU_InitStruct.Number = MPU_REGION_NUMBER2;
   MPU_InitStruct.BaseAddress = 0xC0000000;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_4MB;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_16MB;
   MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
