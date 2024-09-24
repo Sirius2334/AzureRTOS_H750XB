@@ -17,6 +17,8 @@
 
 #include "arm_math.h"
 
+#include "ux_device_cdc_acm.h"
+
 #define JPEG_OUTPUT_BUFFER_ADDR (((uint32_t *)0xC0000000) + 800 * 480 * 4)
 #define CHUNK_SIZE_IN ((uint32_t)(64 * 1024))  // 单次解码输入数据最大长度
 #define CHUNK_SIZE_OUT ((uint32_t)(64 * 1024)) // 单次解码输出数据最大长度
@@ -24,15 +26,19 @@
 void bsp_InitDWT(void);
 static void DSP_Sine(void);
 
-asm(".global jpeg_start, jpeg_end;"
-    // "jpeg_start: .incbin \"../ltdc.jpg\";"
-    "jpeg_start: "
-    // ".incbin \"../ltdc.bmp\";"
-    ".incbin \"../ltdc.jpg\";"
-    "jpeg_end: ");
+__ASM(".global jpeg_start, jpeg_end;"
+      // "jpeg_start: .incbin \"../ltdc.jpg\";"
+      "jpeg_start: "
+      // ".incbin \"../ltdc.bmp\";"
+      ".incbin \"../ltdc.jpg\";"
+      "jpeg_end: ");
 
 extern unsigned int jpeg_start, jpeg_end;
 extern __IO uint32_t Jpeg_HWDecodingEnd;
+
+UX_SLAVE_CLASS_CDC_ACM *cdc_acm;
+uint8_t UserRxBuffer[16];
+const uint8_t UserTxMessage[] = "MY CDC CLASS IS RUNNING!\r\n";
 
 typedef struct __attribute__((__packed__)) BITMAPFILEHEADER /* size: 40 */
 {
@@ -171,14 +177,25 @@ VOID mainTask(ULONG id)
     // else
     //     uart_printf(&huart1, "SECTOR 6 read failed.\r\n");
 
+    /* Local Variables */
+    ULONG actual_length;
+    UX_SLAVE_DEVICE *device;
+    device = &_ux_system_slave->ux_system_slave_device;
+
     bsp_InitDWT();
 
     while (1)
     {
+        /* Check if device is configured */
+        if ((device->ux_slave_device_state == UX_DEVICE_CONFIGURED) && (cdc_acm != UX_NULL))
+        {
+            ux_device_class_cdc_acm_write(cdc_acm, (UCHAR *)UserTxMessage, sizeof(UserTxMessage) - 1, &actual_length);
+        }
+
         // lv_tick_inc(5);
         // lv_task_handler();
         tx_thread_sleep(1000);
-        DSP_Sine();
+        // DSP_Sine();
     }
 }
 

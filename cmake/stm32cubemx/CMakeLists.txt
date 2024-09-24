@@ -8,6 +8,7 @@ enable_language(C ASM)
 
 target_compile_definitions(stm32cubemx INTERFACE 
 	TX_INCLUDE_USER_DEFINE_FILE 
+	UX_INCLUDE_USER_DEFINE_FILE 
 	USE_HAL_DRIVER 
 	STM32H750xx
     $<$<CONFIG:Debug>:DEBUG>
@@ -16,11 +17,17 @@ target_compile_definitions(stm32cubemx INTERFACE
 target_include_directories(stm32cubemx INTERFACE
     ../../Core/Inc
     ../../AZURE_RTOS/App
+    ../../USBX/App
+    ../../USBX/Target
     ../../Drivers/STM32H7xx_HAL_Driver/Inc
     ../../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy
     ../../Utilities/JPEG
     ../../Drivers/CMSIS/Device/ST/STM32H7xx/Include
     ../../Drivers/CMSIS/Include
+    ../../Middlewares/ST/usbx/common/core/inc/
+    ../../Middlewares/ST/usbx/ports/generic/inc/
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/inc/
     ../../Middlewares/ST/threadx/common/inc/
     ../../Middlewares/ST/threadx/ports/cortex_m7/gnu/inc/
 )
@@ -39,9 +46,13 @@ target_sources(stm32cubemx INTERFACE
     ../../Core/Src/sdmmc.c
     ../../Core/Src/tim.c
     ../../Core/Src/usart.c
+    ../../Core/Src/usb_otg.c
     ../../Core/Src/stm32h7xx_it.c
     ../../Core/Src/stm32h7xx_hal_msp.c
     ../../Core/Src/stm32h7xx_hal_timebase_tim.c
+    ../../USBX/App/ux_device_descriptors.c
+    ../../USBX/App/ux_device_cdc_acm.c
+    ../../USBX/App/app_usbx_device.c
     ../../AZURE_RTOS/App/app_azure_rtos.c
     ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_cortex.c
     ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc.c
@@ -74,7 +85,119 @@ target_sources(stm32cubemx INTERFACE
     ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim_ex.c
     ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c
     ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c
+    ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd.c
+    ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd_ex.c
+    ../../Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c
     ../../Core/Src/system_stm32h7xx.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_alternate_setting_get.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_alternate_setting_set.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_class_register.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_class_unregister.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_clear_feature.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_configuration_get.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_configuration_set.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_control_request_process.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_descriptor_send.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_disconnect.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_endpoint_stall.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_get_status.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_host_wakeup.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_initialize.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_interface_delete.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_interface_get.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_interface_set.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_interface_start.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_microsoft_extension_register.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_set_feature.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_transfer_abort.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_transfer_all_request_abort.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_transfer_request.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_device_stack_uninitialize.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_debug_callback_register.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_debug_log.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_delay_ms.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_descriptor_pack.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_descriptor_parse.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_error_callback_register.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_event_flags_create.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_event_flags_delete.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_event_flags_get.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_event_flags_set.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_long_get.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_long_get_big_endian.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_long_put.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_long_put_big_endian.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_allocate.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_allocate_add_safe.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_allocate_mulc_safe.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_allocate_mulv_safe.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_compare.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_copy.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_free.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_byte_pool_create.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_byte_pool_search.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_memory_set.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_mutex_create.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_mutex_delete.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_mutex_off.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_mutex_on.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_pci_class_scan.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_pci_read.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_pci_write.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_physical_address.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_semaphore_create.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_semaphore_delete.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_semaphore_get.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_semaphore_put.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_set_interrupt_handler.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_short_get.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_short_get_big_endian.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_short_put.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_short_put_big_endian.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_string_length_check.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_string_length_get.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_string_to_unicode.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_thread_create.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_thread_delete.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_thread_identify.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_thread_relinquish.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_thread_resume.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_thread_schedule_other.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_thread_sleep.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_thread_suspend.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_timer_create.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_timer_delete.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_unicode_to_string.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_utility_virtual_address.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_system_error_handler.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_system_initialize.c
+    ../../Middlewares/ST/usbx/common/core/src/ux_system_uninitialize.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_callback.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_endpoint_create.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_endpoint_destroy.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_endpoint_reset.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_endpoint_stall.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_endpoint_status.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_frame_number_get.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_function.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_initialize.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_initialize_complete.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_interrupt_handler.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_transfer_abort.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_transfer_request.c
+    ../../Middlewares/ST/usbx/common/usbx_stm32_device_controllers/ux_dcd_stm32_uninitialize.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_activate.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_bulkin_thread.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_bulkout_thread.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_control_request.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_deactivate.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_entry.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_initialize.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_ioctl.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_read.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_unitialize.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_write.c
+    ../../Middlewares/ST/usbx/common/usbx_device_classes/src/ux_device_class_cdc_acm_write_with_callback.c
     ../../Middlewares/ST/threadx/common/src/tx_initialize_high_level.c
     ../../Middlewares/ST/threadx/common/src/tx_initialize_kernel_enter.c
     ../../Middlewares/ST/threadx/common/src/tx_initialize_kernel_setup.c
